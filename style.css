@@ -1,4 +1,4 @@
-/* Reset default styles */
+
 * {
     margin: 0;
     padding: 0;
@@ -6,28 +6,220 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
+    font-family: 'Poppins', sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+    line-height: 1.5;
+}
+
+.container {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0.5rem 1rem;
+    margin-top: 2rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    margin-bottom: 3rem;
+}
+
+.header-card {
+    margin-bottom: 0.5rem;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 20px;
+    border-bottom: 1px solid 0.5rem;
 }
 
-header {
-    background-color: #f4f4f4;
-    padding: 1rem;
-    text-align: center;
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-main {
-    padding: 20px;
+.chef-hat-icon, .clock-icon, .search-icon {
+    color: #64748b;
 }
 
-footer {
-    background-color: #f4f4f4;
-    text-align: center;
-    padding: 1rem;
-    position: fixed;
-    bottom: 0;
+.current-time {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #64748b;
+}
+
+
+
+.search-container {
+    display: flex;
+    align-items: center;
+    max-width: 300px;
+    position: relative;
+}
+
+#search-input {
     width: 100%;
+    padding: 0.5rem 0.5rem 0.5rem 2rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.search-icon {
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: left;
+    padding: 0.75rem;
+    border-bottom: 1px solid #64748b60;
+}
+
+th {
+    font-weight: 600;
+    color: #64748b;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.badge-pending {
+    background-color:#ef4444;
+    color: #f8fafc;
+    font-size: 8px;
+
+}
+
+.badge-in-progress {
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 8px;
+}
+
+.badge-completed {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-size: 8px;
+
+}
+
+.complete-btn{
+    gap: 5px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid #e2e8f0;
+    color: #000000;
+}
+
+.btn-outline:hover {
+    background-color: #f1f5f9;
+    color: #0f172a;
+}
+
+.ingredient-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.ingredient-image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    margin-bottom: 0.25rem;
+}
+
+.ingredient-name {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.order-table{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@media (max-width: 1024px) {
+    table {
+        font-size: 0.875rem;
+    }
+
+    th, td {
+        padding: 0.5rem;
+    }
+
+    .ingredient-image {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .current-time {
+        align-self: flex-end;
+    }
+
+    table {
+        font-size: 0.75rem;
+    }
+
+    th, td {
+        padding: 0.25rem;
+    }
+
+    .ingredient-image {
+        width: 20px;
+        height: 20px;
+    }
+
+    .ingredient-name {
+        display: none;
+    }
 }
