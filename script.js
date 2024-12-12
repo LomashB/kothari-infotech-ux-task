@@ -103,7 +103,10 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateCurrentTime, 1000);
     updateCurrentTime();
 
+    let currentFilteredOrders = orders;
+
     function renderOrders(ordersToRender) {
+        currentFilteredOrders = ordersToRender;
         orderTableBody.innerHTML = '';
         if (ordersToRender.length === 0) {
             orderTableBody.innerHTML = '<tr><td colspan="10" class="text-center">No orders found</td></tr>';
@@ -212,15 +215,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
-        const filteredOrders = orders.filter(order =>
+        
+        // If the search term is empty, show all orders
+        const filteredOrders = searchTerm ? orders.filter(order =>
             order.items.some(item =>
                 item.name.toLowerCase().includes(searchTerm)
             )
-        );
+        ) : orders;
+
         renderOrders(filteredOrders);
     });
-
-    renderOrders(orders);
 
     // Update time remaining for orders
     setInterval(() => {
@@ -232,6 +236,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-        renderOrders(orders);
+        
+        // Re-apply the current filtered state
+        const searchTerm = searchInput.value.toLowerCase();
+        const filteredOrders = searchTerm ? orders.filter(order =>
+            order.items.some(item =>
+                item.name.toLowerCase().includes(searchTerm)
+            )
+        ) : orders;
+
+        renderOrders(filteredOrders);
     }, 1000);
+
+    renderOrders(orders);
 });
