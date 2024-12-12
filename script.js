@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     quantity: 1,
                 },
             ],
-            status: 'in-progress',
+            status: 'progress',
             timeRemaining: 300,
         },
         {
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     quantity: 1,
                 },
             ],
-            status: 'in-progress',
+            status: 'progress',
             timeRemaining: 360,
         },
     ];
@@ -95,7 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentTimeElement = document.getElementById('current-time');
 
     function updateCurrentTime() {
-        currentTimeElement.textContent = new Date().toLocaleTimeString();
+        const now = new Date();
+        const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        currentTimeElement.textContent = now.toLocaleTimeString(undefined, options);
     }
 
     setInterval(updateCurrentTime, 1000);
@@ -113,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 let rowContent = '';
 
-                // Only add the order ID cell for the first item in each order
                 if (index === 0) {
                     rowContent += `
                         <td class="font-medium" rowspan="${order.items.length}">
@@ -122,9 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 }
 
-                // Add the item details
                 rowContent += `
-                    <td>${item.name}</td>
+                    <td class="font-medium">${item.name}</td>
                     <td class="text-center">
                         <div class="ingredient-cell">
                             <img src="${item.bread.image}" alt="${item.bread.type}" class="ingredient-image">
@@ -160,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td class="text-center">${item.quantity}</td>
                 `;
 
-                // Add status and time cells only for the first item in each order
                 if (index === 0) {
                     rowContent += `
                         <td class="text-center" rowspan="${order.items.length}">
@@ -169,14 +168,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             </span>
                         </td>
                         <td class="text-center" rowspan="${order.items.length}">
-                            <span class="time-remaining ${order.timeRemaining <= 120 ? 'text-destructive' : 'text-primary'}">
+                            <span class="time-remaining ${order.timeRemaining <= 120 ? 'text-red-600' : 'text-blue-600'}">
                                 ${formatTime(order.timeRemaining)}
                             </span>
                         </td>
                     `;
                 }
 
-                // Add the action button
                 rowContent += `
                     <td class="text-right">
                         <button class="btn btn-outline complete-btn" onclick="completeItem(${order.id}, ${item.id})">
@@ -223,4 +221,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     renderOrders(orders);
+
+    // Update time remaining for orders
+    setInterval(() => {
+        orders.forEach(order => {
+            if (order.status !== 'completed') {
+                order.timeRemaining = Math.max(0, order.timeRemaining - 1);
+                if (order.timeRemaining === 0) {
+                    order.status = 'completed';
+                }
+            }
+        });
+        renderOrders(orders);
+    }, 1000);
 });
