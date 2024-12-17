@@ -1,94 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const orders = [
-        {
-            id: 1,
-            items: [
-                {
-                    id: 1,
-                    name: 'Classic Burger',
-                    bread: { type: 'Sesame Bun', image: './resources/sesame-bun.png' },
-                    patty: { type: 'Beef', image: './resources/beef-patty.png' },
-                    sauces: [{ type: 'Ketchup', image: './resources/ketchup.png' }],
-                    vegetables: [
-                        { type: 'Lettuce', image: './resources/lettuce.png' },
-                        { type: 'Tomato', image: './resources/tomato.png' },
-                    ],
-                    quantity: 2,
-                },
-                {
-                    id: 2,
-                    name: 'Veggie Burger',
-                    bread: { type: 'Whole Wheat Bun', image: './resources/whole-wheat-bun.png' },
-                    patty: { type: 'Veggie', image: './resources/veggie-pattie.png' },
-                    sauces: [{ type: 'Mustard', image: './resources/mustard.png' }],
-                    vegetables: [
-                        { type: 'Lettuce', image: './resources/lettuce.png' },
-                        { type: 'Onion', image: './resources/onion.png' },
-                    ],
-                    quantity: 1,
-                },
-            ],
-            status: 'pending',
-            timeRemaining: 600,
-        },
-        {
-            id: 2,
-            items: [
-                {
-                    id: 3,
-                    name: 'Cheese Burger',
-                    bread: { type: 'Brioche Bun', image: './resources/brioche-bun.png' },
-                    patty: { type: 'Beef', image: './resources/beef-patty.png' },
-                    sauces: [
-                        { type: 'Mayo', image: './resources/mayo.png' },
-                        { type: 'BBQ', image: './resources/bbq-sauce.png' },
-                    ],
-                    vegetables: [{ type: 'Pickles', image: './resources/pickles.png' }],
-                    quantity: 1,
-                },
-            ],
-            status: 'progress',
-            timeRemaining: 300,
-        },
-        {
-            id: 3,
-            items: [
-                {
-                    id: 4,
-                    name: 'Spicy Chicken Burger',
-                    bread: { type: 'Potato Bun', image: './resources/potato-bun.png' },
-                    patty: { type: 'Chicken', image: './resources/chicken-patty.png' },
-                    sauces: [{ type: 'Spicy Mayo', image: './resources/spicy-mayo.png' }],
-                    vegetables: [
-                        { type: 'Lettuce', image: './resources/lettuce.png' },
-                        { type: 'Jalapenos', image: './resources/jalapenos.png' },
-                    ],
-                    quantity: 2,
-                },
-            ],
-            status: 'pending',
-            timeRemaining: 450,
-        },
-        {
-            id: 4,
-            items: [
-                {
-                    id: 5,
-                    name: 'Mushroom Swiss Burger',
-                    bread: { type: 'Pretzel Bun', image: './resources/pretzel-bun.png' },
-                    patty: { type: 'Beef', image: './resources/beef-patty.png' },
-                    sauces: [{ type: 'Garlic Aioli', image: './resources/garlic-aioli.png' }],
-                    vegetables: [
-                        { type: 'Sautéed Mushrooms', image: './resources/mushrooms.png' },
-                        { type: 'Swiss Cheese', image: './resources/sweese-cheese.png' },
-                    ],
-                    quantity: 1,
-                },
-            ],
-            status: 'progress',
-            timeRemaining: 360,
-        },
-    ];
+    const orders = [];
 
     const orderTableBody = document.getElementById('order-table-body');
     const searchInput = document.getElementById('search-input');
@@ -121,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (index === 0) {
                     rowContent += `
                         <td class="font-medium" rowspan="${order.items.length}">
-                            #${order.id}
+                            #${orders.indexOf(order) + 1}
                         </td>
                     `;
                 }
@@ -249,4 +160,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000);
 
     renderOrders(orders);
+
+    // Initialize WebSocket
+    const socket = new WebSocket('ws://localhost:3000');
+
+    socket.addEventListener('open', () => {
+        console.log('WebSocket connection established');
+    });
+
+    socket.addEventListener('message', (event) => {
+        try {
+            const message = JSON.parse(event.data);
+            if (message.event === 'orders:initial' && Array.isArray(message.data)) {
+                orders.length = 0; // Clear existing orders
+                orders.push(...message.data); // Replace with new orders
+                renderOrders(orders); // Re-render the orders
+            } else if (message.event === 'orders:new' && message.data) {
+                // Assuming message.data contains a single order object
+                orders.push(message.data); // Add the new order to the orders array
+                renderOrders(orders); // Re-render the orders
+            } else {
+                console.error('Received data is not in the expected format:', message);
+            }
+        } catch (error) {
+            console.error('Failed to parse WebSocket message:', error);
+        }
+    });
+
+    socket.addEventListener('close', () => {
+        console.log('WebSocket connection closed');
+    });
+
+    socket.addEventListener('error', (error) => {
+        console.error('WebSocket error:', error);
+    });
 });
